@@ -1,4 +1,4 @@
-function [ X, XY ] = anav_getXfromDepthmap( depthMap, K, distortion, mask )
+function [ X, X_valid, depth_valid ] = anav_getXfromDepthmap( depthMap, K, distortion, mask )
 %XAW_GETXFROMDEPTHMAP
 %
 
@@ -19,7 +19,8 @@ X = xd .* repmat( double( mdepthMap( : )' ), 3, 1);
 X = anav_projAddDim( X );
 
 if nargout > 1
-    XY = anav_projAddDim( xd );
+    depth_valid = X(3,:) > 0;
+    X_valid = X( :, depth_valid);
 end
 
 % 
