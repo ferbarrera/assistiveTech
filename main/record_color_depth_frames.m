@@ -2,6 +2,15 @@
 % - Save color and depth images 
 % ----------------------------------------------
 
+%% parameters
+
+% {year}{month}{day}_{hour}-{minutes}_{wheelchair | visuallyImpaired}
+% 20180112_13-00_wheelchair
+% 20180112_13-00_visuallyImpaired
+dataset_path = "./dataset/20190911_14-00_visuallyImpaired/";
+
+%%
+
 info =  imaqhwinfo('kinect');   % informaci?n del sensor
 info.DeviceInfo(1)              % acceso a la c?mara
 s = 0;
@@ -35,8 +44,8 @@ while s>=0
     
     % filename
     str_1 = num2str(s);
-    imwrite(imgColor, strcat('im_color_',str_1,'.png'));
-    imwrite(imgDepth, strcat('im_depht_',str_1,'.png'), 'BitDepth', 16, 'Mode', 'lossless' );
+    imwrite(imgColor, strcat(dataset_path,'im_color_',str_1,'.png'));
+    imwrite(imgDepth, strcat(dataset_path,'im_depht_',str_1,'.png'), 'BitDepth', 16, 'Mode', 'lossless' );
     
     s = s+1;
 
