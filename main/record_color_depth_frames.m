@@ -7,9 +7,20 @@
 % {year}{month}{day}_{hour}-{minutes}_{wheelchair | visuallyImpaired}
 % 20180112_13-00_wheelchair
 % 20180112_13-00_visuallyImpaired
-dataset_path = "./dataset/20190911_14-00_visuallyImpaired/";
+dataset_name = '20190911_14-00_visuallyImpaired';
 
 %%
+
+% ckeck if exist dataset then make directory
+dataset_path = strcat('../dataset/', dataset_name, '/');
+fprintf('%s\n', dataset_path);
+if (exist( dataset_path ,'dir') == 7)
+    error('directory already exists');
+else
+    mkdir(dataset_path);
+    fprintf('%s\n','directory created');
+end
+
 
 info =  imaqhwinfo('kinect');   % informaci?n del sensor
 info.DeviceInfo(1)              % acceso a la c?mara
