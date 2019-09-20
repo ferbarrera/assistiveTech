@@ -647,3 +647,4 @@ dataset/20180112_13-00_wheelchair/im_depht_98.png
 dataset/20180112_13-00_wheelchair/im_depht_99.png
 dataset/cameraParameters/kinect_v1_color_dist_2018.mat
 dataset/cameraParameters/kinect_v1_color_k_2018.mat
+main/record_color_depth_frames.m~
