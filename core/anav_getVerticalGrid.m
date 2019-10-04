@@ -1,4 +1,6 @@
-function [ grid , p1 ] = anav_prueba( plane_model, floor_centroid, X_scene, voxel_number, voxel_size )
+function [ grid , map ] = anav_getVerticalGrid( plane_model, floor_centroid, X_scene, voxel_number, voxel_size )
+%UNTITLED Summary of this function goes here
+%   Detailed explanation goes here
 
     % 
     d = 1000;
@@ -21,5 +23,7 @@ function [ grid , p1 ] = anav_prueba( plane_model, floor_centroid, X_scene, voxe
     yoffset = max(grid(2,:));
     grid = grid - repmat( [0,yoffset,0], size(grid,1), 1 );
     grid = grid + repmat(p1, size(grid,1), 1 );
+    
+    [ map ] = anav_occupancyGrid( grid, voxel_number, X_scene );
     
 end

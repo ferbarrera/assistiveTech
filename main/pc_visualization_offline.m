@@ -78,7 +78,7 @@ while (isOpen(player) && not(stop))
         color = imread( color_im );
         depth = imread( depth_im );
         
-        % falta vvv
+        % scale depth image
         [depth] = scaleImage(depth, size(color,1), size(color,2));
         
         % getting 3d information
@@ -95,15 +95,20 @@ while (isOpen(player) && not(stop))
         [ floor_normal, floor_centroid, plane_model, inlierIndices, outlierIndices ] = getFloorPlane( ptCloud, ...
             maxDistance, referenceNormal, maxAngularDistance);
         
+        % highlight detected floor
         if (inlierIndices > 0)
-            ptCloud.Color(inlierIndices,3) = 255;
-            
+            ptCloud.Color(inlierIndices,3) = 255;         
         end
                 
         % generate floor rotation (or floor coordinate system)
         [ plane_normal, d_sign ] = anav_flipNormalTowardCamera( floor_normal, floor_centroid );
         [ plane_R ] = anav_generateRotation( plane_normal );
         
+        
+        % plot mapping 3d-to-2d
+        [ map , grid ] = anav_generateMapping( plane_model, floor_centroid, X_valid(:,outlierIndices), voxel_number, voxel_size);
+        imagesc( mapping2Daxe, 'CData', map ); 
+        drawnow;
         
         % viewer
         view(player, ptCloud);
@@ -114,19 +119,19 @@ while (isOpen(player) && not(stop))
         end
         
         % add new plots
-        plotAxe( player.Axes, plane_R, floor_centroid ); % draw plane axe       
-
-
-        % plot mapping 3d-to-2d
-        [ map ] = anav_generateMapping( plane_model, floor_centroid, X_valid(:,outlierIndices), voxel_number, voxel_size);
-        imagesc( mapping2Daxe, 'CData', map );        
+        plotAxe( player.Axes, plane_R, floor_centroid ); % draw plane axe
         
+        ind_first_layer=(voxel_number(1)+1)*(voxel_number(3)+1);
+        scatter3(player.Axes,grid(1:16:ind_first_layer,1),grid(1:16:ind_first_layer,2),grid(1:16:ind_first_layer,3),'MarkerEdgeColor','k','MarkerFaceColor',[.9 0.1 .1]);
+        
+        drawnow;
     else
         %stop = true;
         %im_counter = 0;
     end
     
     im_counter = im_counter + 1;
+    fprintf('frame %d \n', im_counter);
     
 end
 

@@ -1,4 +1,4 @@
-function [ map ] = anav_generateMapping( plane_model, floor_centroid, X_scene, voxel_number, voxel_size )
+function [ map, grid ] = anav_generateMapping( plane_model, floor_centroid, X_scene, voxel_number, voxel_size )
 
     % minimun distance from floor to voxelation
     dmin = 100;
@@ -16,7 +16,7 @@ function [ map ] = anav_generateMapping( plane_model, floor_centroid, X_scene, v
     valid_proj = pp_dist>dmin; % 10 cm above floor
     obstacles = X_scene(1:3,valid_proj)';
     [obstacles_proj] = projectPoint2Plane( plane_normal, pp_dist(valid_proj), obstacles);
-        
+    
     % Rotate and translate obstacles
     [ obstacles_2d ] = anav_applyT( obstacles_proj, plane_R, camera_proj );
     [ obstacles_2d ] = anav_rotate_y( obstacles_2d, -pi/2 );
@@ -26,5 +26,7 @@ function [ map ] = anav_generateMapping( plane_model, floor_centroid, X_scene, v
     [ map ] = anav_occupancy_grid_map(voxel_number, grid, obstacles_2d);
     map = map>0;
     
+    grid = anav_applyT( grid, plane_R, camera_proj );
+    grid = anav_rotate_y( grid, -pi/2 );
 end
 

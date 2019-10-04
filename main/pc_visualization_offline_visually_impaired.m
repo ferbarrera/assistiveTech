@@ -78,7 +78,7 @@ while (isOpen(player) && not(stop))
         color = imread( color_im );
         depth = imread( depth_im );
         
-        % falta vvv
+        % scale depth image
         [depth] = scaleImage(depth, size(color,1), size(color,2));
         
         % getting 3d information
@@ -95,9 +95,9 @@ while (isOpen(player) && not(stop))
         [ floor_normal, floor_centroid, plane_model, inlierIndices, outlierIndices ] = getFloorPlane( ptCloud, ...
             maxDistance, referenceNormal, maxAngularDistance);
         
+        % highlight detected floor
         if (inlierIndices > 0)
-            ptCloud.Color(inlierIndices,3) = 255;
-            
+            ptCloud.Color(inlierIndices,3) = 255;           
         end
                 
         % generate floor rotation (or floor coordinate system)
@@ -105,8 +105,8 @@ while (isOpen(player) && not(stop))
         [ plane_R ] = anav_generateRotation( plane_normal );
         
        
-        %[ g , map ] = anav_prueba( plane_model, floor_centroid, X_valid(:,outlierIndices), voxel_number, voxel_size );
-        [ grid , map ] = anav_prueba( plane_model, floor_centroid, X_valid, voxel_number, voxel_size );
+        %[ grid , map ] = anav_getVerticalGrid( plane_model, floor_centroid, X_valid(:,outlierIndices), voxel_number, voxel_size );
+        [ grid , map ] = anav_getVerticalGrid( plane_model, floor_centroid, X_valid, voxel_number, voxel_size );
 
         imagesc( mapping2Daxe, 'CData', map );        
         drawnow;
@@ -124,20 +124,7 @@ while (isOpen(player) && not(stop))
         
         ind_first_layer=(voxel_number(1)+1)*(voxel_number(2)+1)*2;
         scatter3(player.Axes,grid(1:ind_first_layer,1),grid(1:ind_first_layer,2),grid(1:ind_first_layer,3),'MarkerEdgeColor','k','MarkerFaceColor',[.9 0.1 .1]);       
-%         scatter3(player.Axes,p(:,1),p(:,2),p(:,3),'MarkerEdgeColor','k','MarkerFaceColor',[.9 1 .63]);       
-% 
-%         c = 0;
-%         l_inf = (1+voxel_number(2))*c+1;
-%         l_sup = (1+voxel_number(2))*(c+1) -1;
-%         scatter3(player.Axes,g(l_inf:l_sup,1),g(l_inf:l_sup,2),g(l_inf:l_sup,3),'MarkerEdgeColor','k','MarkerFaceColor',[.1 0.9 .1]);       
-%         c = voxel_number(1)+2+c;
-%         l_inf = (1+voxel_number(2))*c+1 + 1;
-%         l_sup = (1+voxel_number(2))*(c+1);
-%         scatter3(player.Axes,g(l_inf:l_sup,1),g(l_inf:l_sup,2),g(l_inf:l_sup,3),'MarkerEdgeColor','k','MarkerFaceColor',[.9 0.1 .1]);       
-
         
-        % plot mapping 3d-to-2d
-        %[ map ] = anav_generateMapping( plane_model, floor_centroid, X_valid(:,outlierIndices), voxel_number, voxel_size);
         drawnow;
     else
         %stop = true;
@@ -145,6 +132,7 @@ while (isOpen(player) && not(stop))
     end
     
     im_counter = im_counter + 1;
+    fprintf('frame %d \n', im_counter);
     
 end
 
