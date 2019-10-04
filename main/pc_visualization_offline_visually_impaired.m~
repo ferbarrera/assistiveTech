@@ -23,8 +23,8 @@ referenceNormal = [0,1,0.1];
 maxAngularDistance = 10;
 
 % voxel size
-voxel_size = [50 50 50];
-voxel_number = [80 1 100];
+voxel_size = [500 500 400];
+voxel_number = [5 5 3];
 
 
 %% code
@@ -57,8 +57,8 @@ camtarget(player.Axes,[0 0 3025]);
 
 % 2D 
 figure('Name', '3D to 2D mapping');
-mapping2Daxe = gca;
-init3dto2dFloorMap( mapping2Daxe, voxel_number, voxel_size);
+mapping2Daxe = axes;
+init3dto2dVerticalMap( mapping2Daxe, voxel_number, voxel_size);
 
 stop = false;
 
@@ -104,6 +104,12 @@ while (isOpen(player) && not(stop))
         [ plane_normal, d_sign ] = anav_flipNormalTowardCamera( floor_normal, floor_centroid );
         [ plane_R ] = anav_generateRotation( plane_normal );
         
+       
+        %[ g , map ] = anav_prueba( plane_model, floor_centroid, X_valid(:,outlierIndices), voxel_number, voxel_size );
+        [ grid , map ] = anav_prueba( plane_model, floor_centroid, X_valid, voxel_number, voxel_size );
+
+        imagesc( mapping2Daxe, 'CData', map );        
+        drawnow;
         
         % viewer
         view(player, ptCloud);
@@ -114,13 +120,25 @@ while (isOpen(player) && not(stop))
         end
         
         % add new plots
-        plotAxe( player.Axes, plane_R, floor_centroid ); % draw plane axe       
-
-
-        % plot mapping 3d-to-2d
-        [ map ] = anav_generateMapping( plane_model, floor_centroid, X_valid(:,outlierIndices), voxel_number, voxel_size);
-        imagesc( mapping2Daxe, 'CData', map );        
+        plotAxe( player.Axes, plane_R, floor_centroid ); % draw plane axe
         
+        ind_first_layer=(voxel_number(1)+1)*(voxel_number(2)+1)*2;
+        scatter3(player.Axes,grid(1:ind_first_layer,1),grid(1:ind_first_layer,2),grid(1:ind_first_layer,3),'MarkerEdgeColor','k','MarkerFaceColor',[.9 0.1 .1]);       
+%         scatter3(player.Axes,p(:,1),p(:,2),p(:,3),'MarkerEdgeColor','k','MarkerFaceColor',[.9 1 .63]);       
+% 
+%         c = 0;
+%         l_inf = (1+voxel_number(2))*c+1;
+%         l_sup = (1+voxel_number(2))*(c+1) -1;
+%         scatter3(player.Axes,g(l_inf:l_sup,1),g(l_inf:l_sup,2),g(l_inf:l_sup,3),'MarkerEdgeColor','k','MarkerFaceColor',[.1 0.9 .1]);       
+%         c = voxel_number(1)+2+c;
+%         l_inf = (1+voxel_number(2))*c+1 + 1;
+%         l_sup = (1+voxel_number(2))*(c+1);
+%         scatter3(player.Axes,g(l_inf:l_sup,1),g(l_inf:l_sup,2),g(l_inf:l_sup,3),'MarkerEdgeColor','k','MarkerFaceColor',[.9 0.1 .1]);       
+
+        
+        % plot mapping 3d-to-2d
+        %[ map ] = anav_generateMapping( plane_model, floor_centroid, X_valid(:,outlierIndices), voxel_number, voxel_size);
+        drawnow;
     else
         %stop = true;
         %im_counter = 0;

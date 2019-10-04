@@ -1,5 +1,6 @@
 function [xd] = anav_applyDistortion( x , distortion )
 % ANAV_APPLYDISTORTION
+% distortion [r1 r2 t1 t2 r3]
 
 % Add distortion:
 r2 = sum(x(1:2,:).^2);

@@ -10,7 +10,7 @@ y = repmat(0, size(x) );
 t0 = [number_voxel(1)*voxel_size(1)/2 0 0];
 
 % generate grid
-Xa = [x(:)*voxel_size(1) y(:)*voxel_size(1) z(:)*voxel_size(1)] - repmat(t0, numel(x), 1);
+Xa = [x(:)*voxel_size(1) y(:)*voxel_size(2) z(:)*voxel_size(3)] - repmat(t0, numel(x), 1);
 
 end
 
