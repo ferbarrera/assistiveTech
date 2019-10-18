@@ -26,7 +26,7 @@ info =  imaqhwinfo('kinect');   % informaci?n del sensor
 info.DeviceInfo(1)              % acceso a la c?mara
 s = 0;
 
-colorVid = videoinput('kinect',1,'RGB_1920x1080'); %activa c?mara RGB video
+colorVid = videoinput('kinect',1,'BGR_1920x1080'); %activa c?mara RGB video
 depthVid = videoinput('kinect',2,'Depth_512x424'); %activa c?mara depth video
     
 % Set Frames per trigger. Bigger number means more frames when triggered.
@@ -62,5 +62,5 @@ while s>=0
 
 end
 
-release(colorVid);
-release(depthVid);
+delete(colorVid);
+delete(depthVid);
