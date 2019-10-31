@@ -36,60 +36,44 @@ void setup() {
 void loop() {
   // put your main code here, to run repeatedly:
   if (Serial.available() >= matrix_numel) {
-    // read ffrom matlab app
-    Serial.readBytes(incomingBytes, matrix_numel);
-    // write to pc consol
-    //Serial1.write(incomingBytes, matrix_numel);
-
     digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-    delay(1000);                       // wait for a second
-    digitalWrite(LED_BUILTIN, LOW); 
-  
-
-//  memcpy(map2d, incomingBytes, sizeof(incomingBytes[0])*matrix_numel);
-//  for(int i=0; i<matrix_rows; i++) {
-//    for(int j=0; j<matrix_cols; j++) {
-//      Serial1.print(map2d[i][j],DEC);
+    // read matrix from matlab app
+    Serial.readBytes(incomingBytes, matrix_numel);
+    // copy matrix from input buffer to a 2d matrix
+    memcpy(map2d, incomingBytes, sizeof(incomingBytes[0])*matrix_numel);
+    digitalWrite(LED_BUILTIN, LOW);
+    
+    // to debug
+//    for(int i=0; i<matrix_rows; i++) {
+//      for(int j=0; j<matrix_cols; j++) {
+//        Serial1.print(map2d[i][j]);
+//        Serial1.print('-');
+//      }
 //    }
-//  }
-
-for(int i=0; i<matrix_numel; i++) {
-Serial1.print(incomingBytes[i], DEC);
-Serial1.print('-');
-}
-  
-  activeMatrix();
   }
+
+  activeMatrix();
+  
 }
 
 
 
 void activeMatrix( void ) {
-  bool activeRow = false;
-  
-  for(int i=0; i<matrix_rows; i++) {
-    // verifica si la fila debe ser activada
-    for(int j=0; j<matrix_cols; j++) {
-      if (map2d[i][j] > 0) {
-        activeRow = true;
-        break;
-      }
-    }
-
-    if (activeRow) {
-      digitalWrite(dPortRows[i], HIGH);      
-      for(int j=0; j<matrix_cols; j++) {
-        if (map2d[i][j] > 0) {
+for(int i=0; i<matrix_rows; i++) {
+  digitalWrite(dPortRows[i], HIGH);
+  for(int j=0; j<matrix_cols; j++) {
+    if (map2d[i][j] > 0) {
           analogWrite(pwmPortCols[j], map2d[i][j]);
         } else{
           analogWrite(pwmPortCols[j], 0);
         }
-      }
-    } else {
-      digitalWrite(dPortRows[i], LOW);
     }
-
-    activeRow = false;
+    delay(5);
+    
+    digitalWrite(dPortRows[i], LOW);
+    for(int j=matrix_cols; j>0; j--)
+      analogWrite(pwmPortCols[j], 0);
   }
 }
+
 
