@@ -17,9 +17,9 @@ keep_comm = true;
 fopen(s); %Abrir puerto serial
 
 map_2d = zeros(matrix_rows, matrix_cols, 'uint8' );
-map_2d(1,1) = 100;
-map_2d(1,3) = 100;
-map_2d(2,2) = 250;
+map_2d(1,2) = 250;
+map_2d(2,1) = 100;
+map_2d(2,3) = 250;
 while keep_comm
 
     a = input('Press 1 to send message, 0 to exit');

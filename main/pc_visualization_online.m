@@ -7,8 +7,8 @@ close all;
 
 %% parameters
 
-camera_k_mat = 'kinect_v2_color_k_2019';        % kinectV2_ref 
-camera_dist_mat = 'kinect_v2_color_dist_2019';  % kinectV2_ref 
+camera_k_mat = 'kinect_v2_color_k_2019_scaled';        % kinectV2_ref 
+camera_dist_mat = 'kinect_v2_color_dist_2019_scaled';  % kinectV2_ref 
 im_counter = 0;
 
 % point cloud limits
@@ -90,7 +90,7 @@ while s>=0
     [depth, ts_depth, metaData_Depth] = getdata(depthVid);
 
     %scale depth image
-    [depth] = scaleImage(depth, size(color,1), size(color,2));
+    [color] = scaleImage(color, size(depth,1), size(depth,2));
     
     % getting 3d information
     [ X, X_valid, valid_depth_mask ] = anav_getXfromDepthmap( depth, K, dist );
