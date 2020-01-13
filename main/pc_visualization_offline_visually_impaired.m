@@ -78,8 +78,8 @@ while (isOpen(player) && not(stop))
         color = imread( color_im );
         depth = imread( depth_im );
         
-        % scale depth image
-        [depth] = scaleImage(depth, size(color,1), size(color,2));
+        % scale color image
+        [color] = scaleImage(color, size(depth,1), size(depth,2));
         
         % getting 3d information
         [ X, X_valid, valid_depth_mask ] = anav_getXfromDepthmap( depth, K, dist );
@@ -104,10 +104,9 @@ while (isOpen(player) && not(stop))
         [ plane_normal, d_sign ] = anav_flipNormalTowardCamera( floor_normal, floor_centroid );
         [ plane_R ] = anav_generateRotation( plane_normal );
         
-       
-        %[ grid , map ] = anav_getVerticalGrid( plane_model, floor_centroid, X_valid(:,outlierIndices), voxel_number, voxel_size );
-        [ grid , map ] = anav_getVerticalGrid( plane_model, floor_centroid, X_valid, voxel_number, voxel_size );
-
+        
+        % plot mapping 3d-to-2d
+        [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, X_valid(:,outlierIndices), voxel_number, voxel_size );
         imagesc( mapping2Daxe, 'CData', map );        
         drawnow;
         

@@ -1,4 +1,4 @@
-function [ grid , map ] = anav_getVerticalGrid( plane_model, floor_centroid, X_scene, voxel_number, voxel_size )
+function [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, X_scene, voxel_number, voxel_size )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 

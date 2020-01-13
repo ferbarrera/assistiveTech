@@ -78,7 +78,7 @@ while (isOpen(player) && not(stop))
         color = imread( color_im );
         depth = imread( depth_im );
         
-        % scale depth image
+        % scale color image
         [color] = scaleImage(color, size(depth,1), size(depth,2));
         
         % getting 3d information
