@@ -89,7 +89,7 @@ while s>=0
     [color, ts_color, metaData_Color] = getdata(colorVid);
     [depth, ts_depth, metaData_Depth] = getdata(depthVid);
 
-    %scale depth image
+    %scale color image
     [color] = scaleImage(color, size(depth,1), size(depth,2));
     
     % getting 3d information
