@@ -8,8 +8,8 @@ close all;
 %% Parameters
 
 seq_name = '20190924_14-00_visuallyImpaired';
-camera_k_mat = 'kinect_v2_color_k_2019';        % kinectV2_ref 
-camera_dist_mat = 'kinect_v2_color_dist_2019';  % kinectV2_ref 
+camera_k_mat = 'kinect_v2_color_k_2019_scaled';        % kinectV2_ref 
+camera_dist_mat = 'kinect_v2_color_dist_2019_scaled';  % kinectV2_ref 
 im_counter = 0;
 
 % point cloud limits

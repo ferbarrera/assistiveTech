@@ -3,7 +3,7 @@ function [ ] = init3dto2dFloorMap( mapping2Daxe, voxel_number, voxel_size)
 %   Detailed explanation goes here
 
 initPattern = zeros(voxel_number(3), voxel_number(1));
-initPattern(1,1) = 1;
+%initPattern(1,1) = 1;
 
 imagesc( mapping2Daxe, initPattern);
 

@@ -22,8 +22,8 @@ referenceNormal = [0,1,0.1];
 maxAngularDistance = 10;
 
 % voxel size
-voxel_size = [50 50 50];
-voxel_number = [80 1 100];
+voxel_size = [500 500 400];
+voxel_number = [5 5 3];
 
 %%
 
@@ -122,7 +122,7 @@ while s>=0
     
     % viewer
     view(player, ptCloud);
-    delete previous plots
+    % delete previous plots
     plot_handles = get(player.Axes,'Children');
     if (numel(plot_handles)>1)
         delete(plot_handles(1:end-1));
