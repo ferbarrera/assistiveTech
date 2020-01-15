@@ -1,9 +1,6 @@
-function [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, X_scene, voxel_number, voxel_size )
+function [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, X_scene, voxel_number, voxel_size, voxel_distance, voxel_occ_th )
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
-
-    % 
-    d = 1000;
 
     % generate floor rotation (or floor coordinate system)
     [ plane_normal, d_sign ] = anav_flipNormalTowardCamera( plane_model.Normal, floor_centroid );
@@ -13,9 +10,9 @@ function [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, X_s
     [ camera_dist ] = plane2pointDist( plane_normal, d_sign*plane_model.Parameters(4), [0 0 0] );
     [ camera_proj ] = projectPoint2Plane( plane_normal, camera_dist, [0 0 0]);
 
-    p1 = camera_proj + (d * plane_R(3,:));
+    p1 = camera_proj + (voxel_distance * plane_R(3,:));
     
-     % generate grid (centered)
+    % generate grid (centered)
     [ grid ] = anav_generateGrid3d( voxel_number, voxel_size);
     
     % rotate to align to plane (the grid it is not over )
@@ -24,6 +21,24 @@ function [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, X_s
     grid = grid - repmat( [0,yoffset,0], size(grid,1), 1 );
     grid = grid + repmat(p1, size(grid,1), 1 );
     
-    [ map ] = anav_occupancyGrid( grid, voxel_number, X_scene );
+    % valor de 
+    step = 250/(voxel_number(3)+1);
+    occ_values = uint8( voxel_number(3)*step:-step:step );
+    
+    begin_ind_layer = 1;
+    end_ind_layer = (voxel_number(1)+1)*(voxel_number(2)+1)*2;
+    step_ind_layer = (voxel_number(1)+1)*(voxel_number(2)+1);
+    occ_map = zeros(voxel_number(2),voxel_number(1),voxel_number(3),'uint16');
+    scaled_occ_map = zeros(voxel_number(2),voxel_number(1),voxel_number(3),'uint8');
+ 
+    for c = 1:voxel_number(3)
+        [ occ_map(:,:,c) ] = anav_occupancyGrid( grid(begin_ind_layer:end_ind_layer,:), voxel_number, X_scene );
+        scaled_occ_map(:,:,c) = uint8(uint8(occ_map(:,:,c)>voxel_occ_th)*occ_values(c));
+     
+        begin_ind_layer = begin_ind_layer + step_ind_layer;
+        end_ind_layer = end_ind_layer + step_ind_layer;
+    end
+    
+    map = uint8(max(scaled_occ_map,[],3));
     
 end

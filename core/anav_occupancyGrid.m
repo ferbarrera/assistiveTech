@@ -2,11 +2,9 @@ function [ img ] = anav_occupancyGrid( grid, voxel_number, X_scene )
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
 
-voxel_occ_th = 10;
+img = zeros(voxel_number(2),voxel_number(1),'uint16');
 
-img = zeros(voxel_number(2),voxel_number(1),'uint8');
-
-for c = 0:1:(voxel_number(1)-1)
+for c = 0:1:(voxel_number(1)-1)     % in x
     l_inf = (1+voxel_number(2))*c+1;
     l_sup = (1+voxel_number(2))*(c+1) -1;
     x_coor_inf = grid(l_inf:l_sup,1);

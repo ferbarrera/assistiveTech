@@ -22,8 +22,10 @@ referenceNormal = [0,1,0.1];
 maxAngularDistance = 10;
 
 % voxel size
-voxel_size = [500 500 400];
-voxel_number = [5 5 3];
+voxel_size = [500 500 500];
+voxel_number = [6 5 3];
+voxel_distance = 1000;
+voxel_occ_th = 10;              % in points
 
 %%
 
@@ -59,7 +61,7 @@ init3dto2dFloorMap( mapping2Daxe, voxel_number, voxel_size);
 % init camera
 info =  imaqhwinfo('kinect');   % informaci?n del sensor
 info.DeviceInfo(1)              % acceso a la c?mara
-s = 0;
+s = 1;
 
 colorVid = videoinput('kinect',1,'BGR_1920x1080'); %activa c?mara RGB video
 depthVid = videoinput('kinect',2,'Depth_512x424'); %activa c?mara depth video
@@ -102,41 +104,44 @@ while s>=0
     % colored point cloud
     ptCloud = pointCloud( X_valid(1:3,:)', 'Color', C_valid );
     
-    % compute floor plane
-    [ floor_normal, floor_centroid, plane_model, inlierIndices, outlierIndices ] = getFloorPlane( ptCloud, ...
-        maxDistance, referenceNormal, maxAngularDistance);
+    if (ptCloud.Count ~= 0)
+
+        % compute floor plane
+        [ floor_normal, floor_centroid, plane_model, inlierIndices, outlierIndices ] = getFloorPlane( ptCloud, ...
+            maxDistance, referenceNormal, maxAngularDistance);
+
+        % highlight detected floor
+        if (inlierIndices > 0)
+            ptCloud.Color(inlierIndices,3) = 255;
+        end
+
+        % generate floor rotation (or floor coordinate system)
+        [ plane_normal, d_sign ] = anav_flipNormalTowardCamera( floor_normal, floor_centroid );
+        [ plane_R ] = anav_generateRotation( plane_normal );
+
+        % plot mapping 3d-to-2d
+        [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, ...
+                X_valid(:,outlierIndices), voxel_number, voxel_size, voxel_distance, voxel_occ_th );
+        imagesc( mapping2Daxe, 'CData', map );
+        drawnow;
+
+        % viewer
+        view(player, ptCloud);
+        % delete previous plots
+        %plot_handles = get(player.Axes,'Children');
+        %if (numel(plot_handles)>1)
+        %    delete(plot_handles(1:end-1));
+        %end
+
+        % add new plots
+        %plotAxe( player.Axes, plane_R, floor_centroid ); % draw plane axe
+
+        %ind_first_layer=(voxel_number(1)+1)*(voxel_number(2)+1)*2;
+        %scatter3(player.Axes,grid(1:ind_first_layer,1),grid(1:ind_first_layer,2),grid(1:ind_first_layer,3),'MarkerEdgeColor','k','MarkerFaceColor',[.9 0.1 .1]);       
+
+        drawnow;
     
-    % highlight detected floor
-    if (inlierIndices > 0)
-        ptCloud.Color(inlierIndices,3) = 255;
     end
-    
-    % generate floor rotation (or floor coordinate system)
-    [ plane_normal, d_sign ] = anav_flipNormalTowardCamera( floor_normal, floor_centroid );
-    [ plane_R ] = anav_generateRotation( plane_normal );
-        
-    % plot mapping 3d-to-2d
-    [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, X_valid(:,outlierIndices), voxel_number, voxel_size);
-    imagesc( mapping2Daxe, 'CData', map );
-    drawnow;
-    
-    % viewer
-    view(player, ptCloud);
-    % delete previous plots
-    plot_handles = get(player.Axes,'Children');
-    if (numel(plot_handles)>1)
-        delete(plot_handles(1:end-1));
-    end
-    
-    % add new plots
-    plotAxe( player.Axes, plane_R, floor_centroid ); % draw plane axe
-    
-    ind_first_layer=(voxel_number(1)+1)*(voxel_number(2)+1)*2;
-    scatter3(player.Axes,grid(1:ind_first_layer,1),grid(1:ind_first_layer,2),grid(1:ind_first_layer,3),'MarkerEdgeColor','k','MarkerFaceColor',[.9 0.1 .1]);       
-    
-    drawnow;
-    
-    s = s+1;
 
 end
 
