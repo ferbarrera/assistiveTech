@@ -7,7 +7,7 @@ close all;
 
 %% Parameters
 
-seq_name = '20201401_16-20_visuallyImpaired';
+seq_name = '20200115_15-43_visuallyImpaired';
 camera_k_mat = 'kinect_v2_color_k_2019_scaled';        % kinectV2_ref 
 camera_dist_mat = 'kinect_v2_color_dist_2019_scaled';  % kinectV2_ref 
 im_counter = 0;
@@ -18,14 +18,14 @@ ylimits = [-2500 2500];
 zlimits = [0 6000];
 
 % plane detection algorithm
-maxDistance = 150;
+maxDistance = 100;
 referenceNormal = [0,1,0.1];
 maxAngularDistance = 10;
 
 % voxel size
-voxel_size = [500 500 500];
+voxel_size = [400 300 200];
 voxel_number = [6 5 3];
-voxel_distance = 1000;
+voxel_distance = 1500;
 voxel_occ_th = 10;              % in points
 
 %% code
@@ -59,7 +59,7 @@ camtarget(player.Axes,[0 0 3025]);
 % 2D 
 figure('Name', '3D to 2D mapping');
 mapping2Daxe = axes;
-init3dto2dVerticalMap( mapping2Daxe, voxel_number, voxel_size);
+[mapping2Dimage] = init3dto2dVerticalMap( mapping2Daxe, voxel_number, voxel_size);
 
 stop = false;
 
@@ -111,7 +111,7 @@ while (isOpen(player) && not(stop))
             % plot mapping 3d-to-2d
             [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, ...
                 X_valid(:,outlierIndices), voxel_number, voxel_size, voxel_distance, voxel_occ_th );
-            imagesc( mapping2Daxe, 'CData', map );        
+            set( mapping2Dimage, 'CData', map );        
             drawnow;
 
             % viewer

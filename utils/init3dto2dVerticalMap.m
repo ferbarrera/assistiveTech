@@ -1,11 +1,15 @@
-function [ ] = init3dto2dVerticalMap( mapping2Daxe, voxel_number, voxel_size)
+function [ image_pointer ] = init3dto2dVerticalMap( mapping2Daxe, voxel_number, voxel_size)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
 
 initPattern = zeros(voxel_number(2), voxel_number(1));
 %initPattern(1,1) = 1;
+clims = [0 255];
 
-imagesc( mapping2Daxe, initPattern);
+image_pointer = imagesc( mapping2Daxe, initPattern);
+set( mapping2Daxe,'CLim',clims);
+set( mapping2Daxe,'CLimMode', 'manual');
+colorbar
 
 xlabel(mapping2Daxe,'X (cm)');
 ylabel(mapping2Daxe,'Y (cm)');

@@ -22,9 +22,9 @@ referenceNormal = [0,1,0.1];
 maxAngularDistance = 10;
 
 % voxel size
-voxel_size = [500 500 500];
+voxel_size = [400 300 200];
 voxel_number = [6 5 3];
-voxel_distance = 1000;
+voxel_distance = 1500;
 voxel_occ_th = 10;              % in points
 
 %%
@@ -56,7 +56,7 @@ camtarget(player.Axes,[0 0 3025]);
 % 2D 
 figure('Name', '3D to 2D mapping');
 mapping2Daxe = gca;
-init3dto2dFloorMap( mapping2Daxe, voxel_number, voxel_size);
+[mapping2Dimage] = init3dto2dVerticalMap( mapping2Daxe, voxel_number, voxel_size);
 
 % init camera
 info =  imaqhwinfo('kinect');   % informaci?n del sensor
@@ -122,7 +122,7 @@ while s>=0
         % plot mapping 3d-to-2d
         [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, ...
                 X_valid(:,outlierIndices), voxel_number, voxel_size, voxel_distance, voxel_occ_th );
-        imagesc( mapping2Daxe, 'CData', map );
+        set( mapping2Dimage, 'CData', map ); 
         drawnow;
 
         % viewer

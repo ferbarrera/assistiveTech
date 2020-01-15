@@ -30,8 +30,13 @@ function [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, X_s
     step_ind_layer = (voxel_number(1)+1)*(voxel_number(2)+1);
     occ_map = zeros(voxel_number(2),voxel_number(1),voxel_number(3),'uint16');
     scaled_occ_map = zeros(voxel_number(2),voxel_number(1),voxel_number(3),'uint8');
- 
+    
+    %plot3(X_scene(1,:),X_scene(2,:),X_scene(3,:),'.');
+    %hold on;
+    
     for c = 1:voxel_number(3)
+        %scatter3(grid(begin_ind_layer:end_ind_layer,1),grid(begin_ind_layer:end_ind_layer,2),grid(begin_ind_layer:end_ind_layer,3),'MarkerEdgeColor','k','MarkerFaceColor',[0.5 0.1 .1]);
+        
         [ occ_map(:,:,c) ] = anav_occupancyGrid( grid(begin_ind_layer:end_ind_layer,:), voxel_number, X_scene );
         scaled_occ_map(:,:,c) = uint8(uint8(occ_map(:,:,c)>voxel_occ_th)*occ_values(c));
      
