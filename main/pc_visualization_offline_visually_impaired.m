@@ -23,8 +23,8 @@ referenceNormal = [0,1,0.1];
 maxAngularDistance = 10;
 
 % voxel size
-voxel_size = [400 300 200];
-voxel_number = [6 5 3];
+voxel_size = [800 600 300];
+voxel_number = [4 4 3];
 voxel_distance = 1500;
 voxel_occ_th = 10;              % in points
 
@@ -106,7 +106,6 @@ while (isOpen(player) && not(stop))
             % generate floor rotation (or floor coordinate system)
             [ plane_normal, d_sign ] = anav_flipNormalTowardCamera( floor_normal, floor_centroid );
             [ plane_R ] = anav_generateRotation( plane_normal );
-
 
             % plot mapping 3d-to-2d
             [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, ...

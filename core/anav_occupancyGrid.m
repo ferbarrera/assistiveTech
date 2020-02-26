@@ -1,4 +1,4 @@
-function [ img ] = anav_occupancyGrid( grid, voxel_number, X_scene )
+function [ img, X_valid ] = anav_occupancyGrid( grid, voxel_number, X_scene, X_valid )
 %UNTITLED4 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -24,7 +24,9 @@ for c = 0:1:(voxel_number(1)-1)     % in x
         in_y = (y_coor_inf(j) > X_scene(2,:)) & (X_scene(2,:) > y_coor_sup(j)); 
         in_x = (x_coor_inf(j) < X_scene(1,:)) & (X_scene(1,:) < x_coor_sup(j));
         
-        img(j,c+1) = sum(sum(in_z & in_y & in_x));
+        inside_voxel = in_z & in_y & in_x;
+        
+        img(j,c+1) = sum(sum(inside_voxel));
         
 %       for i = 1:size(X_scene,2)
 %                

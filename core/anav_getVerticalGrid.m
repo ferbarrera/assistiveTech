@@ -22,7 +22,7 @@ function [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, X_s
     grid = grid + repmat(p1, size(grid,1), 1 );
     
     % valor de 
-    step = 250/(voxel_number(3)+1);
+    step = 255/(voxel_number(3)+1);
     occ_values = uint8( voxel_number(3)*step:-step:step );
     
     begin_ind_layer = 1;
@@ -31,13 +31,12 @@ function [ map , grid ] = anav_getVerticalGrid( plane_model, floor_centroid, X_s
     occ_map = zeros(voxel_number(2),voxel_number(1),voxel_number(3),'uint16');
     scaled_occ_map = zeros(voxel_number(2),voxel_number(1),voxel_number(3),'uint8');
     
-    %plot3(X_scene(1,:),X_scene(2,:),X_scene(3,:),'.');
-    %hold on;
+    X_valid = true( 1, size(X_scene,2) );
     
     for c = 1:voxel_number(3)
         %scatter3(grid(begin_ind_layer:end_ind_layer,1),grid(begin_ind_layer:end_ind_layer,2),grid(begin_ind_layer:end_ind_layer,3),'MarkerEdgeColor','k','MarkerFaceColor',[0.5 0.1 .1]);
         
-        [ occ_map(:,:,c) ] = anav_occupancyGrid( grid(begin_ind_layer:end_ind_layer,:), voxel_number, X_scene );
+        [ occ_map(:,:,c), X_valid ] = anav_occupancyGrid( grid(begin_ind_layer:end_ind_layer,:), voxel_number, X_scene, X_valid );
         scaled_occ_map(:,:,c) = uint8(uint8(occ_map(:,:,c)>voxel_occ_th)*occ_values(c));
      
         begin_ind_layer = begin_ind_layer + step_ind_layer;
